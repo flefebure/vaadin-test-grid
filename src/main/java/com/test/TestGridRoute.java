@@ -1,9 +1,11 @@
 package com.test;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.FooterRow;
+import com.vaadin.flow.component.contextmenu.MenuItemBase;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
@@ -11,7 +13,7 @@ import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.List;
 
-@Route(value = "testGrid")
+@Route(value = "")
 public class TestGridRoute extends VerticalLayout {
 
     public static class Item {
@@ -86,11 +88,22 @@ public class TestGridRoute extends VerticalLayout {
         HeaderRow secondHeaderRow = grid.appendHeaderRow();
         //FooterRow footerRow = grid.prependFooterRow();
 
+
+
         grid.getColumnByKey("column1").setWidth("200px").setResizable(true);
         grid.getColumnByKey("column2").setWidth("200px").setResizable(true);
         grid.getColumnByKey("column3").setWidth("200px").setResizable(true);
         grid.getColumnByKey("column4").setWidth("200px").setResizable(true);
         grid.getColumnByKey("column5").setWidth("200px").setResizable(true);
+
+
+        GridContextMenu gridContextMenu = new GridContextMenu(grid);
+        MenuItemBase item =gridContextMenu.addItem("context menu opened", event -> Notification.show("clicked"));
+        gridContextMenu.addGridContextMenuOpenedListener(e -> {
+            GridContextMenu.GridContextMenuOpenedEvent event = (GridContextMenu.GridContextMenuOpenedEvent)e;
+            if (!event.isOpened()) return;;
+            item.setText("context menu opened from column : "+event.getColumnId());
+        });
 
         setHeight("400px");
         add(grid);
